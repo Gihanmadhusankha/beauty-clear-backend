@@ -6,9 +6,11 @@ import userRouter from "./routes/userRouter.js";
 import jwt from "jsonwebtoken";
 import productRouter from "./routes/productRouter.js";
 import orderRouter from "./routes/orderRouter.js";
+import dotenv from 'dotenv';
+dotenv.config();
 let app= express();
 
-mongoose.connect("mongodb+srv://admin:123@cluster0.jn49bio.mongodb.net/?retryWrites=true&w=majority&appName=Cluster").then(
+mongoose.connect(process.env.DATA_BASE_URL).then(
     ()=>{
         console.log("connected to the database");
     }
@@ -24,7 +26,7 @@ app.use((req,res,next)=>{
     const header =req.header("Authorization");
     if(header !=null){
         const token =header.replace("Bearer ","")
-        jwt.verify(token,"random456",(err,decoded)=>{
+        jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
             console.log(decoded)
             if(decoded != null){
                 req.user=decoded
